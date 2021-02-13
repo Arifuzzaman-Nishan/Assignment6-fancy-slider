@@ -24,54 +24,67 @@ const showImages = (images) => {
     let div = document.createElement('div');
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
     div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
-    gallery.appendChild(div)
+    gallery.appendChild(div);
   })
+  loadingSpinner();
 
 }
 
 const getImages = (query) => {
-  fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
-    .then(response => response.json())
-    .then(data => showImages(data.hits))
-    .catch(err => console.log(err))
+  loadingSpinner();
+  setTimeout(() => {
+    fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
+      .then(response => response.json())
+      .then(data => showImages(data.hits))
+      .catch(err => console.log(err))
+  }, 600)
 }
 
 // showImages(data.hits)
 let slideIndex = 0;
 const selectItem = (event, img) => {
   const element = event.target;
-  
+
   ///here added toggle to select the image or unselect the image
   const value = element.classList.toggle("added");
   if (value == true) {
     sliders.push(img);
   }
-  else{
+  else {
     const index = sliders.indexOf(img);
-    sliders.splice(index,1);
+    sliders.splice(index, 1);
   }
-  
+
 }
-var timer
+
+let timer;
 const createSlider = () => {
   // check slider image length
   if (sliders.length < 2) {
     alert('Select at least 2 image.')
     return;
   }
-  // create slider previous next area
-  sliderContainer.innerHTML = '';
-  const prevNext = document.createElement('div');
-  prevNext.className = "prev-next d-flex w-100 justify-content-between align-items-center";
-  prevNext.innerHTML = ` 
+
+ 
+    // create slider previous next area
+    sliderContainer.innerHTML = '';
+    const prevNext = document.createElement('div');
+    prevNext.className = "prev-next d-flex w-100 justify-content-between align-items-center";
+    prevNext.innerHTML = ` 
   <span class="prev" onclick="changeItem(-1)"><i class="fas fa-chevron-left"></i></span>
   <span class="next" onclick="changeItem(1)"><i class="fas fa-chevron-right"></i></span>
   `;
 
-  sliderContainer.appendChild(prevNext)
-  document.querySelector('.main').style.display = 'block';
-  // hide image aria
-  imagesArea.style.display = 'none';
+    sliderContainer.appendChild(prevNext);
+
+    //for loading spinner time
+    setTimeout(()=>{
+      loadingSpinner();
+      document.querySelector('.main').style.display = 'block';
+    },1000)
+    loadingSpinner();
+    // hide image aria
+    imagesArea.style.display = 'none';
 
   const duration = document.getElementById('duration').value || 1000;
 
@@ -89,13 +102,14 @@ const createSlider = () => {
     changeSlide(slideIndex);
   }, duration);
 
-
 }
+
 
 // change slider index 
 const changeItem = index => {
   changeSlide(slideIndex += index);
 }
+
 
 // change slide item
 const changeSlide = (index) => {
@@ -112,14 +126,17 @@ const changeSlide = (index) => {
   }
 
   items.forEach(item => {
-    item.style.display = "none"
+    item.style.display = "none";
   })
 
-  items[index].style.display = "block"
+  items[index].style.display = "block";
 }
+
 
 //for mouse click
 searchBtn.addEventListener('click', function () {
+  //when the search button is click its clear the previous html 
+  document.getElementById("gallery-id").innerHTML = "";
   document.querySelector('.main').style.display = 'none';
   clearInterval(timer);
   const search = document.getElementById('search');
@@ -127,13 +144,13 @@ searchBtn.addEventListener('click', function () {
   sliders.length = 0;
 })
 
+
 //for keyboard enter
 searchField.addEventListener("keypress", (event) => {
   if (event.key === "Enter") {
     searchBtn.click();
   }
 })
-
 
 
 sliderBtn.addEventListener('click', function () {
@@ -148,3 +165,9 @@ sliderBtn.addEventListener('click', function () {
   }
 
 })
+
+
+//for loading 
+const loadingSpinner = () => {
+  document.getElementById("spinner-loading").classList.toggle("d-none");
+}
