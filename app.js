@@ -4,6 +4,7 @@ const galleryHeader = document.querySelector('.gallery-header');
 const searchBtn = document.getElementById('search-btn');
 const sliderBtn = document.getElementById('create-slider');
 const sliderContainer = document.getElementById('sliders');
+const searchField = document.getElementById("search");
 // selected image 
 let sliders = [];
 
@@ -44,7 +45,7 @@ const selectItem = (event, img) => {
   if (item === -1) {
     sliders.push(img);
   } else {
-    alert('Hey, Already added !')
+    alert('Hey, Already added !');
   }
 }
 var timer
@@ -70,20 +71,20 @@ const createSlider = () => {
 
   const duration = document.getElementById('duration').value || 1000;
 
-    sliders.forEach(slide => {
-      let item = document.createElement('div');
-      item.className = "slider-item";
-      item.innerHTML = `<img class="w-100"
+  sliders.forEach(slide => {
+    let item = document.createElement('div');
+    item.className = "slider-item";
+    item.innerHTML = `<img class="w-100"
       src="${slide}"
       alt="">`;
-      sliderContainer.appendChild(item)
-    })
-    changeSlide(0)
-    timer = setInterval(function () {
-      slideIndex++;
-      changeSlide(slideIndex);
-    }, duration);
-  
+    sliderContainer.appendChild(item)
+  })
+  changeSlide(0)
+  timer = setInterval(function () {
+    slideIndex++;
+    changeSlide(slideIndex);
+  }, duration);
+
 
 }
 
@@ -113,13 +114,23 @@ const changeSlide = (index) => {
   items[index].style.display = "block"
 }
 
-searchBtn.addEventListener('click', function () {
-  document.querySelector('.main').style.display = 'none';
-  clearInterval(timer);
-  const search = document.getElementById('search');
-  getImages(search.value)
-  sliders.length = 0;
+//for mouse click
+  searchBtn.addEventListener('click', function () {
+    document.querySelector('.main').style.display = 'none';
+    clearInterval(timer);
+    const search = document.getElementById('search');
+    getImages(search.value);
+    sliders.length = 0;
+  })
+
+//for keyboard enter
+searchField.addEventListener("keypress", (event) => {
+  if (event.key === "Enter") {
+    searchBtn.click();
+  }
 })
+
+
 
 sliderBtn.addEventListener('click', function () {
   const duration = document.getElementById('duration').value;
@@ -128,8 +139,8 @@ sliderBtn.addEventListener('click', function () {
   if (duration < 0) {
     alert("slider change duration cannot be negative");
   }
-  else{
+  else {
     createSlider();
   }
-  
+
 })
