@@ -35,18 +35,22 @@ const getImages = (query) => {
     .then(data => showImages(data.hits))
     .catch(err => console.log(err))
 }
-// showImages(data.hitS)
+
+// showImages(data.hits)
 let slideIndex = 0;
 const selectItem = (event, img) => {
-  let element = event.target;
-  element.classList.add('added');
-
-  let item = sliders.indexOf(img);
-  if (item === -1) {
+  const element = event.target;
+  
+  ///here added toggle to select the image or unselect the image
+  const value = element.classList.toggle("added");
+  if (value == true) {
     sliders.push(img);
-  } else {
-    alert('Hey, Already added !');
   }
+  else{
+    const index = sliders.indexOf(img);
+    sliders.splice(index,1);
+  }
+  
 }
 var timer
 const createSlider = () => {
@@ -115,13 +119,13 @@ const changeSlide = (index) => {
 }
 
 //for mouse click
-  searchBtn.addEventListener('click', function () {
-    document.querySelector('.main').style.display = 'none';
-    clearInterval(timer);
-    const search = document.getElementById('search');
-    getImages(search.value);
-    sliders.length = 0;
-  })
+searchBtn.addEventListener('click', function () {
+  document.querySelector('.main').style.display = 'none';
+  clearInterval(timer);
+  const search = document.getElementById('search');
+  getImages(search.value);
+  sliders.length = 0;
+})
 
 //for keyboard enter
 searchField.addEventListener("keypress", (event) => {
