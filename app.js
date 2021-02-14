@@ -5,6 +5,8 @@ const searchBtn = document.getElementById('search-btn');
 const sliderBtn = document.getElementById('create-slider');
 const sliderContainer = document.getElementById('sliders');
 const searchField = document.getElementById("search");
+const picInfo = document.getElementById("pic-info");
+const selectedPic = document.getElementById("selected-pic");
 // selected image 
 let sliders = [];
 
@@ -30,7 +32,7 @@ const showImages = (images) => {
     gallery.appendChild(div);
   })
   loadingSpinner();
-  document.getElementById("pic-info").classList.remove("d-none");
+  picInfo.classList.remove("d-none");
 }
 
 const getImages = (query) => {
@@ -47,20 +49,20 @@ const getImages = (query) => {
 let selectedPictureCount;
 let slideIndex = 0;
 const selectItem = (event, img) => {
-const element = event.target;
+  const element = event.target;
 
-selectedPictureCount = document.getElementById("selected-pic").innerText;
+  selectedPictureCount = selectedPic.innerText;
 
   ///here added toggle to select the image or unselect the image
   const value = element.classList.toggle("added");
   if (value == true) {
     sliders.push(img);
-    document.getElementById("selected-pic").innerText = ++selectedPictureCount;
+    selectedPic.innerText = ++selectedPictureCount;
   }
   else {
     const index = sliders.indexOf(img);
     sliders.splice(index, 1);
-    document.getElementById("selected-pic").innerText = --selectedPictureCount;
+    selectedPic.innerText = --selectedPictureCount;
   }
 }
 
@@ -72,28 +74,32 @@ const createSlider = () => {
     return;
   }
 
- 
-    // create slider previous next area
-    sliderContainer.innerHTML = '';
-    const prevNext = document.createElement('div');
-    prevNext.className = "prev-next d-flex w-100 justify-content-between align-items-center";
-    prevNext.innerHTML = ` 
+
+  // create slider previous next area
+  sliderContainer.innerHTML = '';
+  const prevNext = document.createElement('div');
+  prevNext.className = "prev-next d-flex w-100 justify-content-between align-items-center";
+  prevNext.innerHTML = ` 
   <span class="prev" onclick="changeItem(-1)"><i class="fas fa-chevron-left"></i></span>
   <span class="next" onclick="changeItem(1)"><i class="fas fa-chevron-right"></i></span>
   `;
 
-    sliderContainer.appendChild(prevNext);
+  sliderContainer.appendChild(prevNext);
 
-    //for loading spinner time
-    setTimeout(()=>{
-      loadingSpinner();
-      document.querySelector('.main').style.display = 'block';
-    },1000)
+  //for loading spinner time
+  setTimeout(() => {
     loadingSpinner();
-    // hide image aria
-    imagesArea.style.display = 'none';
+    document.querySelector('.main').style.display = 'block';
+  }, 1000)
+  loadingSpinner();
 
-  const duration = document.getElementById('duration').value || 1000;
+  // hide image aria
+  imagesArea.style.display = 'none';
+
+  let duration = document.getElementById('duration').value || 1000;
+  if (duration < 0) {
+    duration = duration * (-1);
+  }
 
   sliders.forEach(slide => {
     let item = document.createElement('div');
@@ -142,7 +148,7 @@ const changeSlide = (index) => {
 
 //for mouse click
 searchBtn.addEventListener('click', function () {
-  document.getElementById("selected-pic").innerText = 0;
+  selectedPic.innerText = 0;
   //when the search button is click its clear the previous html 
   document.getElementById("gallery-id").innerHTML = "";
   document.querySelector('.main').style.display = 'none';
@@ -162,15 +168,9 @@ searchField.addEventListener("keypress", (event) => {
 
 
 sliderBtn.addEventListener('click', function () {
-  const duration = document.getElementById('duration').value;
 
   //here just check the duration is negative or not
-  if (duration < 0) {
-    alert("slider change duration cannot be negative");
-  }
-  else {
-    createSlider();
-  }
+  createSlider();
 
 })
 
