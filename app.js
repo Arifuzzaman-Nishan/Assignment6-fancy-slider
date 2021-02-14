@@ -20,6 +20,9 @@ const showImages = (images) => {
   gallery.innerHTML = '';
   // show gallery title
   galleryHeader.style.display = 'flex';
+  const totalPic = document.getElementById("total-pic");
+  totalPic.innerText = images.length;
+
   images.forEach(image => {
     let div = document.createElement('div');
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
@@ -27,7 +30,7 @@ const showImages = (images) => {
     gallery.appendChild(div);
   })
   loadingSpinner();
-
+  document.getElementById("pic-info").classList.remove("d-none");
 }
 
 const getImages = (query) => {
@@ -41,20 +44,24 @@ const getImages = (query) => {
 }
 
 // showImages(data.hits)
+let selectedPictureCount;
 let slideIndex = 0;
 const selectItem = (event, img) => {
-  const element = event.target;
+const element = event.target;
+
+selectedPictureCount = document.getElementById("selected-pic").innerText;
 
   ///here added toggle to select the image or unselect the image
   const value = element.classList.toggle("added");
   if (value == true) {
     sliders.push(img);
+    document.getElementById("selected-pic").innerText = ++selectedPictureCount;
   }
   else {
     const index = sliders.indexOf(img);
     sliders.splice(index, 1);
+    document.getElementById("selected-pic").innerText = --selectedPictureCount;
   }
-
 }
 
 let timer;
@@ -135,6 +142,7 @@ const changeSlide = (index) => {
 
 //for mouse click
 searchBtn.addEventListener('click', function () {
+  document.getElementById("selected-pic").innerText = 0;
   //when the search button is click its clear the previous html 
   document.getElementById("gallery-id").innerHTML = "";
   document.querySelector('.main').style.display = 'none';
