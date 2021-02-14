@@ -7,6 +7,8 @@ const sliderContainer = document.getElementById('sliders');
 const searchField = document.getElementById("search");
 const picInfo = document.getElementById("pic-info");
 const selectedPic = document.getElementById("selected-pic");
+const sliderField = document.getElementById("duration");
+
 // selected image 
 let sliders = [];
 
@@ -35,6 +37,7 @@ const showImages = (images) => {
   picInfo.classList.remove("d-none");
 }
 
+//api
 const getImages = (query) => {
   loadingSpinner();
   setTimeout(() => {
@@ -45,13 +48,15 @@ const getImages = (query) => {
   }, 600)
 }
 
-// showImages(data.hits)
-let selectedPictureCount;
-let slideIndex = 0;
-const selectItem = (event, img) => {
-  const element = event.target;
 
-  selectedPictureCount = selectedPic.innerText;
+let selectedPictureCount; // count the selected picture
+let slideIndex = 0;
+
+// it store the selected image
+const selectItem = (event, img) => {
+const element = event.target;
+
+selectedPictureCount = selectedPic.innerText;
 
   ///here added toggle to select the image or unselect the image
   const value = element.classList.toggle("added");
@@ -65,6 +70,7 @@ const selectItem = (event, img) => {
     selectedPic.innerText = --selectedPictureCount;
   }
 }
+
 
 let timer;
 const createSlider = () => {
@@ -90,13 +96,15 @@ const createSlider = () => {
   setTimeout(() => {
     loadingSpinner();
     document.querySelector('.main').style.display = 'block';
-  }, 1000)
+  }, 800)
   loadingSpinner();
 
   // hide image aria
   imagesArea.style.display = 'none';
 
   let duration = document.getElementById('duration').value || 1000;
+
+  //here just check the duration is negative or not
   if (duration < 0) {
     duration = duration * (-1);
   }
@@ -114,7 +122,6 @@ const createSlider = () => {
     slideIndex++;
     changeSlide(slideIndex);
   }, duration);
-
 }
 
 
@@ -129,9 +136,9 @@ const changeSlide = (index) => {
 
   const items = document.querySelectorAll('.slider-item');
   if (index < 0) {
-    slideIndex = items.length - 1
+    slideIndex = items.length - 1;
     index = slideIndex;
-  };
+  }
 
   if (index >= items.length) {
     index = 0;
@@ -160,18 +167,21 @@ searchBtn.addEventListener('click', function () {
 
 
 //for keyboard enter
-searchField.addEventListener("keypress", (event) => {
-  if (event.key === "Enter") {
-    searchBtn.click();
-  }
-})
+const keyboardEnter = (field,btn)=>{
+  field.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+      btn.click();
+    }
+  })
+}
+//for searchBtn enter
+keyboardEnter(searchField,searchBtn);
+// for sliderBtn enter
+keyboardEnter(sliderField,sliderBtn);
 
-
+//for slider
 sliderBtn.addEventListener('click', function () {
-
-  //here just check the duration is negative or not
   createSlider();
-
 })
 
 
